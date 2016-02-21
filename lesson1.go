@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"strconv"
 )
 
@@ -65,6 +66,7 @@ type turn struct {
 type board struct {
 	mem    map[int]int
 	result string
+	out    io.Writer
 }
 
 func newBoard() *board {
@@ -80,6 +82,7 @@ func newBoard() *board {
 			8: blank,
 			9: blank,
 		},
+		out: os.Stdout,
 	}
 }
 
@@ -155,7 +158,10 @@ func (b *board) step(t *turn) bool {
 }
 
 func (b *board) description() {
-	fmt.Printf(`
+	if b.out == nil {
+		return
+	}
+	b.out.Write([]byte(fmt.Sprintf(`
 
     %v  %v  %v
     %v  %v  %v
@@ -171,7 +177,7 @@ func (b *board) description() {
 		mark[b.mem[7]],
 		mark[b.mem[8]],
 		mark[b.mem[9]],
-	)
+	)))
 }
 
 func (b *board) solve(input_c []int, w io.Writer) {

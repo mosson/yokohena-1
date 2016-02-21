@@ -1,9 +1,6 @@
 package lesson1
 
-import (
-	"sync"
-	"testing"
-)
+import "testing"
 
 type AssertWriter struct {
 	str string
@@ -15,10 +12,6 @@ func (w *AssertWriter) Write(p []byte) (n int, err error) {
 }
 
 func TestSolve(t *testing.T) {
-	m := new(sync.Mutex)
-	m.Lock()
-	defer m.Unlock()
-
 	tests := map[string]string{
 		"79538246":     "x won.",
 		"35497162193":  "x won.",
@@ -47,16 +40,69 @@ func TestSolve(t *testing.T) {
 		"657391482":    "Draw game.",
 	}
 
-	i := 0
 	for k, v := range tests {
-		i = i + 1
 		var b *board = newBoard()
 		var w *AssertWriter = &AssertWriter{}
 		b.solve(read(k), w)
 
 		if w.str != v {
-			t.Errorf("%d: expected \"%s\", actual \"%s\"", i, v, w.str)
+			t.Errorf("%s: expected \"%s\", actual \"%s\"", k, v, w.str)
 		}
 
+	}
+}
+
+func BenchmarkSolveXWon(b *testing.B) {
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		var b *board = newBoard()
+		b.out = nil
+		var w *AssertWriter = &AssertWriter{}
+		b.solve(read("79538246"), w)
+	}
+}
+
+func BenchmarkSolveFoulXWon(b *testing.B) {
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		var b *board = newBoard()
+		b.out = nil
+		var w *AssertWriter = &AssertWriter{}
+		b.solve(read("4319581"), w)
+	}
+}
+
+func BenchmarkSolveOWon(b *testing.B) {
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		var b *board = newBoard()
+		b.out = nil
+		var w *AssertWriter = &AssertWriter{}
+		b.solve(read("965715"), w)
+	}
+}
+
+func BenchmarkSolveDraw(b *testing.B) {
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		var b *board = newBoard()
+		b.out = nil
+		var w *AssertWriter = &AssertWriter{}
+		b.solve(read("972651483927"), w)
+	}
+}
+
+func BenchmarkSolveFoulOWon(b *testing.B) {
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		var b *board = newBoard()
+		b.out = nil
+		var w *AssertWriter = &AssertWriter{}
+		b.solve(read("618843927"), w)
 	}
 }
