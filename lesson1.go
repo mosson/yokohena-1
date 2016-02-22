@@ -3,9 +3,6 @@ package lesson1
 import (
 	"fmt"
 	"io"
-	"log"
-	"os"
-	"strconv"
 )
 
 // 三目並べ( tick-tack-toe )の手を入力とし、勝敗を出力する。
@@ -26,6 +23,8 @@ import (
 //  1 2 3
 //  4 5 6
 //  7 8 9
+
+const zero_ascii = 48
 
 const (
 	blank = 0x0
@@ -49,10 +48,7 @@ var mark map[int]string = map[int]string{
 func read(str string) []int {
 	nums := make([]int, len(str))
 	for i, rune := range str {
-		buf, err := strconv.Atoi(string(rune))
-		if err != nil {
-			log.Fatal("read: ", err)
-		}
+		buf := int(rune) - zero_ascii
 		nums[i] = buf
 	}
 	return nums
@@ -64,38 +60,28 @@ type turn struct {
 }
 
 type board struct {
-	mem    map[int]int
+	mem    []int
 	result string
 	out    io.Writer
 }
 
-func newBoard() *board {
+func newBoard(out io.Writer) *board {
 	return &board{
-		mem: map[int]int{
-			1: blank,
-			2: blank,
-			3: blank,
-			4: blank,
-			5: blank,
-			6: blank,
-			7: blank,
-			8: blank,
-			9: blank,
-		},
-		out: os.Stdout,
+		mem: make([]int, 9),
+		out: out,
 	}
 }
 
 func (b *board) lines() []int {
 	return []int{
+		b.mem[0] & b.mem[3] & b.mem[6],
 		b.mem[1] & b.mem[4] & b.mem[7],
 		b.mem[2] & b.mem[5] & b.mem[8],
-		b.mem[3] & b.mem[6] & b.mem[9],
-		b.mem[1] & b.mem[2] & b.mem[3],
-		b.mem[4] & b.mem[5] & b.mem[6],
-		b.mem[7] & b.mem[8] & b.mem[9],
-		b.mem[1] & b.mem[5] & b.mem[9],
-		b.mem[3] & b.mem[5] & b.mem[7],
+		b.mem[0] & b.mem[1] & b.mem[2],
+		b.mem[3] & b.mem[4] & b.mem[5],
+		b.mem[6] & b.mem[7] & b.mem[8],
+		b.mem[0] & b.mem[4] & b.mem[8],
+		b.mem[2] & b.mem[4] & b.mem[6],
 	}
 }
 
@@ -168,6 +154,7 @@ func (b *board) description() {
     %v  %v  %v
 
     `,
+		mark[b.mem[0]],
 		mark[b.mem[1]],
 		mark[b.mem[2]],
 		mark[b.mem[3]],
@@ -176,13 +163,12 @@ func (b *board) description() {
 		mark[b.mem[6]],
 		mark[b.mem[7]],
 		mark[b.mem[8]],
-		mark[b.mem[9]],
 	)))
 }
 
 func (b *board) solve(input_c []int, w io.Writer) {
 	for i, n := range input_c {
-		if ok := b.step(&turn{player: i % 2, address: n}); !ok {
+		if ok := b.step(&turn{player: i % 2, address: n - 1}); !ok {
 			break
 		}
 	}
