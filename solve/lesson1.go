@@ -1,4 +1,4 @@
-package lesson1
+package solve
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ import (
 //  4 5 6
 //  7 8 9
 
-const zero_ascii = 48
+const zero = 48
 
 const (
 	blank = 0x0
@@ -39,7 +39,7 @@ const (
 	draw = "Draw game."
 )
 
-var mark map[int]string = map[int]string{
+var mark = map[int]string{
 	blank: "-",
 	white: "o",
 	black: "x",
@@ -48,7 +48,7 @@ var mark map[int]string = map[int]string{
 func read(str string) []int {
 	nums := make([]int, len(str))
 	for i, rune := range str {
-		buf := int(rune) - zero_ascii
+		buf := int(rune) - zero
 		nums[i] = buf
 	}
 	return nums
@@ -166,8 +166,8 @@ func (b *board) description() {
 	)))
 }
 
-func (b *board) solve(input_c []int, w io.Writer) {
-	for i, n := range input_c {
+func (b *board) solve(inputC []int, w io.Writer) {
+	for i, n := range inputC {
 		if ok := b.step(&turn{player: i % 2, address: n - 1}); !ok {
 			break
 		}

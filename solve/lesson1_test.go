@@ -1,4 +1,4 @@
-package lesson1
+package solve
 
 import (
 	"os"
@@ -44,8 +44,8 @@ func TestSolve(t *testing.T) {
 	}
 
 	for k, v := range tests {
-		var b *board = newBoard(os.Stdout)
-		var w *AssertWriter = &AssertWriter{}
+		b := newBoard(os.Stdout)
+		w := &AssertWriter{}
 		b.solve(read(k), w)
 
 		if w.str != v {
@@ -92,22 +92,22 @@ func BenchmarkCheck(b *testing.B) {
 }
 
 func BenchmarkSolveXWon(b *testing.B) {
-	var w *AssertWriter = &AssertWriter{}
+	w := &AssertWriter{}
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		var b *board = newBoard(nil)
+		b := newBoard(nil)
 
 		b.solve(read("79538246"), w)
 	}
 }
 
 func BenchmarkSolveFoulXWon(b *testing.B) {
-	var w *AssertWriter = &AssertWriter{}
+	w := &AssertWriter{}
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		var b *board = newBoard(nil)
+		b := newBoard(nil)
 		b.out = nil
 
 		b.solve(read("4319581"), w)
@@ -115,33 +115,33 @@ func BenchmarkSolveFoulXWon(b *testing.B) {
 }
 
 func BenchmarkSolveOWon(b *testing.B) {
-	var w *AssertWriter = &AssertWriter{}
+	w := &AssertWriter{}
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		var b *board = newBoard(nil)
+		b := newBoard(nil)
 
 		b.solve(read("965715"), w)
 	}
 }
 
 func BenchmarkSolveDraw(b *testing.B) {
-	var w *AssertWriter = &AssertWriter{}
+	w := &AssertWriter{}
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		var b *board = newBoard(nil)
+		b := newBoard(nil)
 
 		b.solve(read("972651483927"), w)
 	}
 }
 
 func BenchmarkSolveFoulOWon(b *testing.B) {
-	var w *AssertWriter = &AssertWriter{}
+	w := &AssertWriter{}
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		var b *board = newBoard(nil)
+		b := newBoard(nil)
 
 		b.solve(read("618843927"), w)
 	}
