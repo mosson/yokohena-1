@@ -60,7 +60,7 @@ func (b *Board) IsAvailable() bool {
 // Tick 次の一手を指定する
 func (b *Board) Tick(index int) (bool, string) {
 	if index > 8 || index < 0 {
-		return true, "please type 0-8"
+		return true, "please type 1-9"
 	}
 
 	if b.Player == 2 {
@@ -80,7 +80,11 @@ func (b *Board) Tick(index int) (bool, string) {
 		return false, fmt.Sprintf("player %d won.", winner)
 	}
 
-	return b.IsAvailable(), ""
+	if !b.IsAvailable() {
+		return false, "Draw Game."
+	} else {
+		return true, ""
+	}
 }
 
 // Description 現在の状態を可視化する
